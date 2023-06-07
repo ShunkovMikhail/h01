@@ -1,7 +1,5 @@
-import { APIErrorResult, CreateVideoInputModel, UpdateVideoInputModel, VideoModel } from "./types/models"
-import { DB, RESOLUTIONS, TABLE } from "./data"
-
-const db: DB = new DB()
+import { APIErrorResult, CreateVideoInputModel, UpdateVideoInputModel } from "./types/models"
+import { RESOLUTIONS } from "./data"
 
 export class Validate {
 
@@ -10,37 +8,37 @@ export class Validate {
     CreateVideo(input: CreateVideoInputModel): { HTTPStatus: number, Response: undefined | APIErrorResult, Success: boolean } {
         if (!equalType(input.title, '')) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                         message: 'Incorrect type!',
-                        field: 'title' } }, Success: false
+                        field: 'title' }] }, Success: false
             }
         }
         if (!equalType(input.author, '')) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                         message: 'Incorrect type!',
-                        field: 'author' } }, Success: false
+                        field: 'author' }] }, Success: false
             }
         }
         if (input.title.length > 40) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                     message: 'Too many characters! (maxLength: 40)',
-                        field: 'title' } }, Success: false
+                        field: 'title' }] }, Success: false
             }
         }
         if (input.author.length > 20) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                     message: 'Too many characters! (maxLength: 20)',
-                        field: 'author' } }, Success: false
+                        field: 'author' }] }, Success: false
             }
         }
         if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                     message: 'At least one resolution should be added!',
-                        field: 'availableResolutions' } }, Success: false
+                        field: 'availableResolutions' }] }, Success: false
             }
         }
 
@@ -53,40 +51,40 @@ export class Validate {
     UpdateVideo(input: UpdateVideoInputModel): { HTTPStatus: number, Response: undefined | APIErrorResult, Success: boolean } {
         if (!equalType(input.title, '')) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                         message: 'Incorrect type!',
-                        field: 'title' } }, Success: false
+                        field: 'title' }] }, Success: false
             }
         }
         if (!equalType(input.author, '')) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                         message: 'Incorrect type!',
-                        field: 'author' } }, Success: false
+                        field: 'author' }] }, Success: false
             }
         }
         if (!equalType(input.publicationDate, '')) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                         message: 'Incorrect type!',
-                        field: 'publicationDate' } }, Success: false
+                        field: 'publicationDate' }] }, Success: false
             }
         }
         if (!equalType(input.minAgeRestriction, 0) && !equalType(input.minAgeRestriction, null)) {
             return { HTTPStatus: 400,
-                Response: { errorsMessages: {
+                Response: { errorsMessages: [{
                         message: 'Incorrect type!',
-                        field: 'minAgeRestriction' } }, Success: false
+                        field: 'minAgeRestriction' }] }, Success: false
             }
         }
         if (!equalType(input.canBeDownloaded, false)) {
             return {
                 HTTPStatus: 400,
                 Response: {
-                    errorsMessages: {
+                    errorsMessages: [{
                         message: 'Incorrect type!',
                         field: 'canBeDownloaded'
-                    }
+                    }]
                 }, Success: false
             }
         }
@@ -94,10 +92,10 @@ export class Validate {
             return {
                 HTTPStatus: 400,
                 Response: {
-                    errorsMessages: {
+                    errorsMessages: [{
                         message: 'Too many characters! (maxLength: 40)',
                         field: 'title'
-                    }
+                    }]
                 }, Success: false
             }
         }
@@ -105,10 +103,10 @@ export class Validate {
             return {
                 HTTPStatus: 400,
                 Response: {
-                    errorsMessages: {
+                    errorsMessages: [{
                         message: 'Too many characters! (maxLength: 20)',
                         field: 'author'
-                    }
+                    }]
                 }, Success: false
             }
         }
@@ -116,10 +114,10 @@ export class Validate {
             return {
                 HTTPStatus: 400,
                 Response: {
-                    errorsMessages: {
+                    errorsMessages: [{
                         message: 'At least one resolution should be added!',
                         field: 'availableResolutions'
-                    }
+                    }]
                 }, Success: false
             }
         }
@@ -131,10 +129,10 @@ export class Validate {
             return {
                 HTTPStatus: 400,
                 Response: {
-                    errorsMessages: {
+                    errorsMessages: [{
                         message: 'Incorrect date-time format!',
                         field: 'publicationDate'
-                    }
+                    }]
                 }, Success: false
             }
         }
@@ -144,10 +142,10 @@ export class Validate {
                 return {
                     HTTPStatus: 400,
                     Response: {
-                        errorsMessages: {
+                        errorsMessages: [{
                             message: 'minAgeRestriction should be null or (1 - 18)!',
                             field: 'minAgeRestriction'
-                        }
+                        }]
                     }, Success: false
                 }
             }

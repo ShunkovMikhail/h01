@@ -2,7 +2,7 @@ import { Request } from 'express'
 
 export type TypeOfRequestBody< T > = Request< {},{},T >
 export type TypeOfRequestP< T > = Request< T >
-export type TypeOfRequestQuery< T > = Request< {},{},{},T >
+//export type TypeOfRequestQuery< T > = Request< {},{},{},T >
 export type TypeOfRequestP_Body< T,U > = Request< T,{},U >
 
 export type CreateVideoInputModel = {
@@ -32,7 +32,7 @@ export type UpdateVideoInputModel = {
 }
 
 export type APIErrorResult = {
-    errorsMessages: FieldError
+    errorsMessages: FieldError[]
 }
 
 export type FieldError = {
