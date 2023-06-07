@@ -15,25 +15,26 @@ const validate: Validate = new Validate()
 videosRouter.post('/', (req: TypeOfRequestBody<CreateVideoInputModel>, res: Response<VideoModel | APIErrorResult>) => {
     if (!req.body) {
         res.sendStatus(400)
-    }
-
-    const result = validate.CreateVideo(req.body)
-
-    if (result.Success) {
-        const newEntry: VideoModel = {
-            id: db.nextID(TABLE.VIDEOS),
-            title: req.body.title,
-            author: req.body.author,
-            canBeDownloaded: false,
-            minAgeRestriction: null,
-            createdAt: new Date().toISOString(),
-            publicationDate: new Date(Date.now() + 86400000).toISOString(),
-            availableResolutions: req.body.availableResolutions
-        }
-        db.create(TABLE.VIDEOS, newEntry)
-        res.status(result.HTTPStatus).json(newEntry)
     } else {
-        res.status(result.HTTPStatus).json(result.Response)
+
+        const result = validate.CreateVideo(req.body)
+
+        if (result.Success) {
+            const newEntry: VideoModel = {
+                id: db.nextID(TABLE.VIDEOS),
+                title: req.body.title,
+                author: req.body.author,
+                canBeDownloaded: false,
+                minAgeRestriction: null,
+                createdAt: new Date().toISOString(),
+                publicationDate: new Date(Date.now() + 86400000).toISOString(),
+                availableResolutions: req.body.availableResolutions
+            }
+            db.create(TABLE.VIDEOS, newEntry)
+            res.status(result.HTTPStatus).json(newEntry)
+        } else {
+            res.status(result.HTTPStatus).json(result.Response)
+        }
     }
 })
 
@@ -43,25 +44,26 @@ videosRouter.post('/:id', (req: TypeOfRequestP_Body<{id: string},
     UpdateVideoInputModel>, res: Response<VideoModel | APIErrorResult>) => {
     if (!req.body) {
         res.sendStatus(400)
-    }
-
-    const result = validate.CreateVideo(req.body)
-
-    if (result.Success) {
-        const newEntry: VideoModel = {
-            id: db.nextID(TABLE.VIDEOS),
-            title: req.body.title,
-            author: req.body.author,
-            canBeDownloaded: false,
-            minAgeRestriction: null,
-            createdAt: new Date().toISOString(),
-            publicationDate: new Date(Date.now() + 86400000).toISOString(),
-            availableResolutions: req.body.availableResolutions
-        }
-        db.createAtID(TABLE.VIDEOS, +req.params.id, newEntry)
-        res.status(result.HTTPStatus).json(newEntry)
     } else {
-        res.status(result.HTTPStatus).json(result.Response)
+
+        const result = validate.CreateVideo(req.body)
+
+        if (result.Success) {
+            const newEntry: VideoModel = {
+                id: db.nextID(TABLE.VIDEOS),
+                title: req.body.title,
+                author: req.body.author,
+                canBeDownloaded: false,
+                minAgeRestriction: null,
+                createdAt: new Date().toISOString(),
+                publicationDate: new Date(Date.now() + 86400000).toISOString(),
+                availableResolutions: req.body.availableResolutions
+            }
+            db.createAtID(TABLE.VIDEOS, +req.params.id, newEntry)
+            res.status(result.HTTPStatus).json(newEntry)
+        } else {
+            res.status(result.HTTPStatus).json(result.Response)
+        }
     }
 })
 
@@ -89,25 +91,26 @@ videosRouter.put('/:id', (req: TypeOfRequestP_Body<{id: string},
 
     if (!req.body) {
         res.sendStatus(400)
-    }
-    if (!db.exists(TABLE.VIDEOS, +req.params.id)) {
+    } else if (!db.exists(TABLE.VIDEOS, +req.params.id)) {
         res.sendStatus(404)
-    }
-    const result = validate.UpdateVideo(req.body)
-
-    if (result.Success) {
-        const updateEntry: UpdateVideoInputModel = {
-            title: req.body.title,
-            author: req.body.author,
-            canBeDownloaded: req.body.canBeDownloaded,
-            minAgeRestriction: req.body.minAgeRestriction,
-            publicationDate: req.body.publicationDate,
-            availableResolutions: req.body.availableResolutions
-        }
-        db.update(TABLE.VIDEOS, +req.params.id, updateEntry)
-        res.sendStatus(result.HTTPStatus)
     } else {
-        res.status(result.HTTPStatus).json(result.Response)
+
+        const result = validate.UpdateVideo(req.body)
+
+        if (result.Success) {
+            const updateEntry: UpdateVideoInputModel = {
+                title: req.body.title,
+                author: req.body.author,
+                canBeDownloaded: req.body.canBeDownloaded,
+                minAgeRestriction: req.body.minAgeRestriction,
+                publicationDate: req.body.publicationDate,
+                availableResolutions: req.body.availableResolutions
+            }
+            db.update(TABLE.VIDEOS, +req.params.id, updateEntry)
+            res.sendStatus(result.HTTPStatus)
+        } else {
+            res.status(result.HTTPStatus).json(result.Response)
+        }
     }
 })
 
