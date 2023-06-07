@@ -39,6 +39,34 @@ videosRouter.post('/', (req: TypeOfRequestBody<CreateVideoInputModel>, res: Resp
 
 
 
+videosRouter.post('/:id', (req: TypeOfRequestP_Body<{id: string},
+    UpdateVideoInputModel>, res: Response<VideoModel | APIErrorResult>) => {
+    if (!req.body) {
+        res.sendStatus(400)
+    }
+
+    const result = validate.CreateVideo(req.body)
+
+    if (result.Success) {
+        const newEntry: VideoModel = {
+            id: db.nextID(TABLE.VIDEOS),
+            title: req.body.title,
+            author: req.body.author,
+            canBeDownloaded: false,
+            minAgeRestriction: null,
+            createdAt: new Date().toISOString(),
+            publicationDate: new Date(Date.now() + 86400000).toISOString(),
+            availableResolutions: req.body.availableResolutions
+        }
+        db.createAtID(TABLE.VIDEOS, +req.params.id, newEntry)
+        res.status(result.HTTPStatus).json(newEntry)
+    } else {
+        res.status(result.HTTPStatus).json(result.Response)
+    }
+})
+
+
+
 videosRouter.get('/', (req: Request, res: Response<Array<object | null>>) => {
     res.status(200).json(db.getAll(TABLE.VIDEOS))
 })
@@ -76,7 +104,7 @@ videosRouter.put('/:id', (req: TypeOfRequestP_Body<{id: string},
             publicationDate: req.body.publicationDate,
             availableResolutions: req.body.availableResolutions
         }
-        db.update(+req.params.id, TABLE.VIDEOS, updateEntry)
+        db.update(TABLE.VIDEOS, +req.params.id, updateEntry)
         res.sendStatus(result.HTTPStatus)
     } else {
         res.status(result.HTTPStatus).json(result.Response)
