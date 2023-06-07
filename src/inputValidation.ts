@@ -35,7 +35,7 @@ export class Validate {
                 field: 'availableResolutions' })
         }
 
-        if (errors) {
+        if (errors[0]) {
             return { HTTPStatus: 400, Response: { errorsMessages: errors }, Success: false }
         }
 
@@ -113,7 +113,7 @@ export class Validate {
             }
         }
 
-        if (errors) {
+        if (errors[0]) {
             return { HTTPStatus: 400, Response: { errorsMessages: errors }, Success: false }
         }
 
