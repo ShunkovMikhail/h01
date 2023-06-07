@@ -4,14 +4,20 @@ export enum RESOLUTIONS { 'P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P144
 //-------------------DB------------------------+
 export enum TABLE { VIDEOS = 0 }
 let data: Array<Array<object | null>> = [[]]
-let increment: number[] = [-1];
+let increment: number[] = [0];
 //-------------------DB------------------------+
 
 export class DB {
 
     create(table: number, input: object) {
         data[table].push(input)
-        increment[table]++
+        while (!(!data[table][increment[table]] || data[table][increment[table]] === null)) {
+            increment[table]++
+        }
+    }
+
+    createAtID(table: number, id: number, input: object) {
+        data[table][id] = input
     }
 
     get(table: number, id: number): object | null {
@@ -22,7 +28,7 @@ export class DB {
         return data[table].filter(o => o !== null)
     }
 
-    update(id: number, table: number, input: object) {
+    update(table: number, id: number, input: object) {
         console.log(data[table] , 'data')
         data[table][id] = Object.assign({}, data[table][id], input)
     }
@@ -40,7 +46,7 @@ export class DB {
         return 204
     }
 
-    lastID(table: number): number {
+    nextID(table: number): number {
         return increment[table]
     }
 

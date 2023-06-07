@@ -21,7 +21,7 @@ videosRouter.post('/', (req: TypeOfRequestBody<CreateVideoInputModel>, res: Resp
 
     if (result.Success) {
         const newEntry: VideoModel = {
-            id: db.lastID(TABLE.VIDEOS) + 1,
+            id: db.nextID(TABLE.VIDEOS),
             title: req.body.title,
             author: req.body.author,
             canBeDownloaded: false,
@@ -49,8 +49,9 @@ videosRouter.get('/:id', (req: TypeOfRequestP<{id: string}>, res: Response<objec
 
     if (!db.exists(TABLE.VIDEOS, +req.params.id)) {
         res.sendStatus(404)
+    } else {
+        res.status(200).json(db.get(TABLE.VIDEOS, +req.params.id))
     }
-    res.status(200).json(db.get(TABLE.VIDEOS, +req.params.id))
 })
 
 
