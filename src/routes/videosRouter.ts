@@ -16,8 +16,25 @@ videosRouter.post('/', (req: TypeOfRequestBody<CreateVideoInputModel>, res: Resp
     if (!req.body) {
         res.sendStatus(400)
     }
+
     const result = validate.CreateVideo(req.body)
-    res.status(result.HTTPStatus).json(result.Response)
+
+    if (result.Success) {
+        const newEntry: VideoModel = {
+            id: db.lastID(TABLE.VIDEOS) + 1,
+            title: req.body.title,
+            author: req.body.author,
+            canBeDownloaded: false,
+            minAgeRestriction: null,
+            createdAt: new Date().toISOString(),
+            publicationDate: new Date(Date.now() + 86400000).toISOString(),
+            availableResolutions: req.body.availableResolutions
+        }
+        db.create(TABLE.VIDEOS, newEntry)
+        res.status(result.HTTPStatus).json(newEntry)
+    } else {
+        res.status(result.HTTPStatus).json(result.Response)
+    }
 })
 
 
@@ -47,8 +64,22 @@ videosRouter.put('/:id', (req: TypeOfRequestP_Body<{id: string},
     if (!db.exists(TABLE.VIDEOS, +req.params.id)) {
         res.sendStatus(404)
     }
-    const result = validate.UpdateVideo(+req.params.id, req.body)
-    res.status(result.HTTPStatus).json(result.Response)
+    const result = validate.UpdateVideo(req.body)
+
+    if (result.Success) {
+        const updateEntry: UpdateVideoInputModel = {
+            title: req.body.title,
+            author: req.body.author,
+            canBeDownloaded: req.body.canBeDownloaded,
+            minAgeRestriction: req.body.minAgeRestriction,
+            publicationDate: req.body.publicationDate,
+            availableResolutions: req.body.availableResolutions
+        }
+        db.update(+req.params.id, TABLE.VIDEOS, updateEntry)
+        res.sendStatus(result.HTTPStatus)
+    } else {
+        res.status(result.HTTPStatus).json(result.Response)
+    }
 })
 
 

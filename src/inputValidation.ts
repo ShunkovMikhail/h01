@@ -7,46 +7,89 @@ export class Validate {
 
 
 
-    CreateVideo(input: CreateVideoInputModel): { HTTPStatus: number, Response: VideoModel | APIErrorResult } {
+    CreateVideo(input: CreateVideoInputModel): { HTTPStatus: number, Response: undefined | APIErrorResult, Success: boolean } {
+        if (!equalType(input.title, '')) {
+            return { HTTPStatus: 400,
+                Response: { errorsMessages: {
+                        message: 'Incorrect type!',
+                        field: 'title' } }, Success: false
+            }
+        }
+        if (!equalType(input.author, '')) {
+            return { HTTPStatus: 400,
+                Response: { errorsMessages: {
+                        message: 'Incorrect type!',
+                        field: 'author' } }, Success: false
+            }
+        }
         if (input.title.length > 40) {
             return { HTTPStatus: 400,
                 Response: { errorsMessages: {
                     message: 'Too many characters! (maxLength: 40)',
-                        field: 'title' } }
+                        field: 'title' } }, Success: false
             }
         }
         if (input.author.length > 20) {
             return { HTTPStatus: 400,
                 Response: { errorsMessages: {
                     message: 'Too many characters! (maxLength: 20)',
-                        field: 'author' } }
+                        field: 'author' } }, Success: false
             }
         }
-        if (!arrayFullMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
+        if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
             return { HTTPStatus: 400,
                 Response: { errorsMessages: {
                     message: 'At least one resolution should be added!',
-                        field: 'availableResolutions' } }
+                        field: 'availableResolutions' } }, Success: false
             }
         }
 
-        const newEntry: VideoModel = {
-            id: db.lastID(TABLE.VIDEOS) + 1,
-            title: input.title,
-            author: input.author,
-            canBeDownloaded: false,
-            minAgeRestriction: null,
-            createdAt: new Date().toISOString(),
-            publicationDate: new Date(Date.now() + 86400000).toISOString(),
-            availableResolutions: input.availableResolutions
-        }
-        db.create(TABLE.VIDEOS, newEntry)
-        return { HTTPStatus: 201, Response: newEntry }
+        return { HTTPStatus: 201, Response: undefined, Success: true }
+
     }
 
 
 
-    UpdateVideo(id: number, input: UpdateVideoInputModel) {
+    UpdateVideo(input: UpdateVideoInputModel): { HTTPStatus: number, Response: undefined | APIErrorResult, Success: boolean } {
+        if (!equalType(input.title, '')) {
+            return { HTTPStatus: 400,
+                Response: { errorsMessages: {
+                        message: 'Incorrect type!',
+                        field: 'title' } }, Success: false
+            }
+        }
+        if (!equalType(input.author, '')) {
+            return { HTTPStatus: 400,
+                Response: { errorsMessages: {
+                        message: 'Incorrect type!',
+                        field: 'author' } }, Success: false
+            }
+        }
+        if (!equalType(input.publicationDate, '')) {
+            return { HTTPStatus: 400,
+                Response: { errorsMessages: {
+                        message: 'Incorrect type!',
+                        field: 'publicationDate' } }, Success: false
+            }
+        }
+        if (!equalType(input.minAgeRestriction, 0) && !equalType(input.minAgeRestriction, null)) {
+            return { HTTPStatus: 400,
+                Response: { errorsMessages: {
+                        message: 'Incorrect type!',
+                        field: 'minAgeRestriction' } }, Success: false
+            }
+        }
+        if (!equalType(input.canBeDownloaded, false)) {
+            return {
+                HTTPStatus: 400,
+                Response: {
+                    errorsMessages: {
+                        message: 'Incorrect type!',
+                        field: 'canBeDownloaded'
+                    }
+                }, Success: false
+            }
+        }
         if (input.title.length > 40) {
             return {
                 HTTPStatus: 400,
@@ -55,7 +98,7 @@ export class Validate {
                         message: 'Too many characters! (maxLength: 40)',
                         field: 'title'
                     }
-                }
+                }, Success: false
             }
         }
         if (input.author.length > 20) {
@@ -66,10 +109,10 @@ export class Validate {
                         message: 'Too many characters! (maxLength: 20)',
                         field: 'author'
                     }
-                }
+                }, Success: false
             }
         }
-        if (!arrayFullMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
+        if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
             return {
                 HTTPStatus: 400,
                 Response: {
@@ -77,7 +120,7 @@ export class Validate {
                         message: 'At least one resolution should be added!',
                         field: 'availableResolutions'
                     }
-                }
+                }, Success: false
             }
         }
 
@@ -92,7 +135,7 @@ export class Validate {
                         message: 'Incorrect date-time format!',
                         field: 'publicationDate'
                     }
-                }
+                }, Success: false
             }
         }
 
@@ -105,21 +148,13 @@ export class Validate {
                             message: 'minAgeRestriction should be null or (1 - 18)!',
                             field: 'minAgeRestriction'
                         }
-                    }
+                    }, Success: false
                 }
             }
         }
 
-        const updateEntry: UpdateVideoInputModel = {
-            title: input.title,
-            author: input.author,
-            canBeDownloaded: input.canBeDownloaded,
-            minAgeRestriction: input.minAgeRestriction,
-            publicationDate: input.publicationDate,
-            availableResolutions: input.availableResolutions
-        }
-        db.update(id, TABLE.VIDEOS, updateEntry)
-        return { HTTPStatus: 204, Response: null }
+        return { HTTPStatus: 204, Response: undefined, Success: true }
+
     }
 
 
@@ -127,18 +162,22 @@ export class Validate {
 }
 
 
-
-const arrayFullMatch = (master: string[], slave: string[] | null): boolean => {
-    if (slave === null) {
+/**Return true if the second array contains at least 1 value
+ * and all values from the second array exactly match the first array.
+ */
+const arrayStrictMatch = (first: string[], second: string[] | null): boolean => {
+    if (second === null) {
         return false
     }
-    if (slave.length < 1) {
+    if (second.length < 1) {
         return false
     }
-    for (let i = 0; i < slave.length; i++) {
-        if (master.indexOf(slave[i]) === -1) {
+    for (let i = 0; i < second.length; i++) {
+        if (first.indexOf(second[i]) === -1) {
             return false
         }
     }
     return true
 }
+
+const equalType = (a: unknown, b: unknown) => { return typeof(a) === typeof(b) }
