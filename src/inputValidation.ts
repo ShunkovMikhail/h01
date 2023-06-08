@@ -13,32 +13,30 @@ export class Validate {
             errors.push({
                 message: 'Incorrect type!',
                 field: 'title' })
-        }
-        if (!equalType(input.author, '')) {
-            errors.push({
-                message: 'Incorrect type!',
-                field: 'author' })
-        }
-        if (!errors[0]) {
-            if (input.title.length > 40) {
+        } else if (input.title.length > 40) {
                 errors.push({
                     message: 'Too many characters! (maxLength: 40)',
                     field: 'title'
                 })
             }
-            if (input.author.length > 20) {
-                errors.push({
-                    message: 'Too many characters! (maxLength: 20)',
-                    field: 'author'
-                })
-            }
+        if (!equalType(input.author, '')) {
+            errors.push({
+                message: 'Incorrect type!',
+                field: 'author' })
+        } else if (input.author.length > 20) {
+            errors.push({
+                message: 'Too many characters! (maxLength: 20)',
+                field: 'author'
+            })
+        }
+
+
             if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
                 errors.push({
                     message: 'At least one resolution should be added!',
                     field: 'availableResolutions'
                 })
             }
-        }
 
         if (errors[0]) {
             return { HTTPStatus: 400, Response: { errorsMessages: errors }, Success: false }
@@ -58,47 +56,27 @@ export class Validate {
             errors.push({
                 message: 'Incorrect type!',
                 field: 'title' })
+        } else if (input.title.length > 40) {
+            errors.push({
+                message: 'Too many characters! (maxLength: 40)',
+                field: 'title'
+            })
         }
         if (!equalType(input.author, '')) {
             errors.push({
                 message: 'Incorrect type!',
                 field: 'author' })
+        } else if (input.author.length > 20) {
+            errors.push({
+                message: 'Too many characters! (maxLength: 20)',
+                field: 'author'
+            })
         }
         if (!equalType(input.publicationDate, '')) {
             errors.push({
                 message: 'Incorrect type!',
                 field: 'publicationDate' })
-        }
-        if (!equalType(input.minAgeRestriction, 0) && !equalType(input.minAgeRestriction, null)) {
-            errors.push({
-                message: 'Incorrect type!',
-                field: 'minAgeRestriction' })
-        }
-        if (!equalType(input.canBeDownloaded, false)) {
-            errors.push({
-                message: 'Incorrect type!',
-                field: 'canBeDownloaded'
-            })
-        }
-        if (!errors[0]) {
-            if (input.title.length > 40) {
-                errors.push({
-                    message: 'Too many characters! (maxLength: 40)',
-                    field: 'title'
-                })
-            }
-            if (input.author.length > 20) {
-                errors.push({
-                    message: 'Too many characters! (maxLength: 20)',
-                    field: 'author'
-                })
-            }
-            if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
-                errors.push({
-                    message: 'At least one resolution should be added!',
-                    field: 'availableResolutions'
-                })
-            }
+        } else {
 
             const dateIsValid = (new Date(Date.parse(input.publicationDate)).toISOString() ===
                 new Date(input.publicationDate).toISOString())
@@ -109,16 +87,32 @@ export class Validate {
                     field: 'publicationDate'
                 })
             }
-
-            if (input.minAgeRestriction !== null) {
-                if (input.minAgeRestriction > 18 || input.minAgeRestriction < 1) {
-                    errors.push({
-                        message: 'minAgeRestriction should be null or (1 - 18)!',
-                        field: 'minAgeRestriction'
-                    })
-                }
+        }
+        if (!equalType(input.minAgeRestriction, 0) && !equalType(input.minAgeRestriction, null)) {
+            errors.push({
+                message: 'Incorrect type!',
+                field: 'minAgeRestriction' })
+        } else if (input.minAgeRestriction !== null) {
+            if (input.minAgeRestriction > 18 || input.minAgeRestriction < 1) {
+                errors.push({
+                    message: 'minAgeRestriction should be null or (1 - 18)!',
+                    field: 'minAgeRestriction'
+                })
             }
         }
+        if (!equalType(input.canBeDownloaded, false)) {
+            errors.push({
+                message: 'Incorrect type!',
+                field: 'canBeDownloaded'
+            })
+        }
+
+            if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
+                errors.push({
+                    message: 'At least one resolution should be added!',
+                    field: 'availableResolutions'
+                })
+            }
 
         if (errors[0]) {
             return { HTTPStatus: 400, Response: { errorsMessages: errors }, Success: false }
