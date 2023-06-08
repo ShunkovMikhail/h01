@@ -19,20 +19,25 @@ export class Validate {
                 message: 'Incorrect type!',
                 field: 'author' })
         }
-        if (input.title.length > 40) {
-            errors.push({
-                message: 'Too many characters! (maxLength: 40)',
-                field: 'title' })
-        }
-        if (input.author.length > 20) {
-            errors.push({
-                message: 'Too many characters! (maxLength: 20)',
-                field: 'author' })
-        }
-        if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
-            errors.push({
-                message: 'At least one resolution should be added!',
-                field: 'availableResolutions' })
+        if (!errors[0]) {
+            if (input.title.length > 40) {
+                errors.push({
+                    message: 'Too many characters! (maxLength: 40)',
+                    field: 'title'
+                })
+            }
+            if (input.author.length > 20) {
+                errors.push({
+                    message: 'Too many characters! (maxLength: 20)',
+                    field: 'author'
+                })
+            }
+            if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
+                errors.push({
+                    message: 'At least one resolution should be added!',
+                    field: 'availableResolutions'
+                })
+            }
         }
 
         if (errors[0]) {
@@ -75,41 +80,43 @@ export class Validate {
                 field: 'canBeDownloaded'
             })
         }
-        if (input.title.length > 40) {
-            errors.push({
-                message: 'Too many characters! (maxLength: 40)',
-                field: 'title'
-            })
-        }
-        if (input.author.length > 20) {
-            errors.push({
-                message: 'Too many characters! (maxLength: 20)',
-                field: 'author'
-            })
-        }
-        if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
-            errors.push({
-                message: 'At least one resolution should be added!',
-                field: 'availableResolutions'
-            })
-        }
-
-        const dateIsValid = (new Date(Date.parse(input.publicationDate)).toISOString() ===
-            new Date(input.publicationDate).toISOString())
-
-        if (!dateIsValid) {
-            errors.push({
-                message: 'Incorrect date-time format!',
-                field: 'publicationDate'
-            })
-        }
-
-        if (input.minAgeRestriction !== null) {
-            if (input.minAgeRestriction > 18 || input.minAgeRestriction < 1) {
+        if (!errors[0]) {
+            if (input.title.length > 40) {
                 errors.push({
-                    message: 'minAgeRestriction should be null or (1 - 18)!',
-                    field: 'minAgeRestriction'
+                    message: 'Too many characters! (maxLength: 40)',
+                    field: 'title'
                 })
+            }
+            if (input.author.length > 20) {
+                errors.push({
+                    message: 'Too many characters! (maxLength: 20)',
+                    field: 'author'
+                })
+            }
+            if (!arrayStrictMatch(Object.keys(RESOLUTIONS), input.availableResolutions)) {
+                errors.push({
+                    message: 'At least one resolution should be added!',
+                    field: 'availableResolutions'
+                })
+            }
+
+            const dateIsValid = (new Date(Date.parse(input.publicationDate)).toISOString() ===
+                new Date(input.publicationDate).toISOString())
+
+            if (!dateIsValid) {
+                errors.push({
+                    message: 'Incorrect date-time format!',
+                    field: 'publicationDate'
+                })
+            }
+
+            if (input.minAgeRestriction !== null) {
+                if (input.minAgeRestriction > 18 || input.minAgeRestriction < 1) {
+                    errors.push({
+                        message: 'minAgeRestriction should be null or (1 - 18)!',
+                        field: 'minAgeRestriction'
+                    })
+                }
             }
         }
 
